@@ -145,7 +145,12 @@ function handleCellClick(event) {
     }
 }
   
-
+function toggleButtons(activeButton, inactiveButton) {
+  // Add 'active' class to the clicked button
+  activeButton.classList.add('active');
+  // Remove 'active' class from the other button
+  inactiveButton.classList.remove('active');
+}
 
 // Check for a winning condition
 function checkWin(state, player) {
@@ -170,14 +175,17 @@ function resetBoard(){
 resetButton.addEventListener('click', resetBoard);
 
 Player1Button.addEventListener('click', () => {
+    toggleButtons(Player1Button, Player2Button);
     resetBoard();
     botActive = true;
 });
 
 Player2Button.addEventListener('click', () => {
+    toggleButtons(Player2Button, Player1Button);
     resetBoard();
     botActive = false;
 })
 
 // Start the game
 createGrid();
+toggleButtons(Player1Button, Player2Button);
