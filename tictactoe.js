@@ -2,9 +2,12 @@
 const grid = document.getElementById('grid');
 const message = document.getElementById('message');
 const resetButton = document.getElementById('reset');
+const Player2Button = document.getElementById('multiPlayer');
+const Player1Button = document.getElementById('vsBot');
 let currentPlayer = 'X'; // Player X starts
 let gameActive = true;
 let gridState = Array(9).fill(null);
+let botActive = true;
 
 // Initialize the game grid
 function createGrid() {
@@ -97,38 +100,64 @@ function minimax(state, depth, isMaximizing) {
   }
 }
 
-// Handle player's click on a cell
-function handleCellClick(event) {
-    if(currentPlayer === 'X'){
+function PlayTurn(event){
     const index = event.target.dataset.index;
-  
+    
     // If the game is active and the clicked cell is empty, process the move
     if (gameActive && !gridState[index]) {
-      gridState[index] = currentPlayer;
-      event.target.textContent = currentPlayer;
-  
-      // Check for win or draw after player move
-      if (checkWin(gridState, currentPlayer)) {
+    gridState[index] = currentPlayer;
+    event.target.textContent = currentPlayer;
+
+    // Check for win or draw after player move
+    if (checkWin(gridState, currentPlayer)) {
         message.textContent = `Player ${currentPlayer} wins!`;
         gameActive = false;
-      } else if (gridState.every(cell => cell !== null)) {
+    } else if (gridState.every(cell => cell !== null)) {
         message.textContent = "It's a draw!";
         gameActive = false;
-      } else {
+    } else {
         // Switch turn to the other player (bot or human)
         currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
-        message.textContent = `Player ${currentPlayer}'s turn`;
-  
-        // If it's the bot's turn, make the bot move
-        if (currentPlayer === 'O') {
-          setTimeout(() => { // Add delay to simulate bot thinking
-            botMove();
-          }, 100); // Delay for 500ms for better user experience
+        message.textContent = `Player ${currentPlayer}'s turn`; 
         }
-      }
     }
-  }
 }
+
+// Handle player's click on a cell
+function handleCellClick(event) {
+    if(botActive){
+        if(currentPlayer === 'X'){
+            PlayTurn(event);
+            // If it's the bot's turn, make the bot move
+            if (currentPlayer === 'O') {
+            setTimeout(() => { // Add delay to simulate bot thinking
+                botMove();
+            }, 100); // Delay for 100ms for better user experience
+            }
+        }
+    }
+    const index = event.target.dataset.index;
+    
+        // If the game is active and the clicked cell is empty, process the move
+        if (gameActive && !gridState[index]) {
+        gridState[index] = currentPlayer;
+        event.target.textContent = currentPlayer;
+    
+        // Check for win or draw after player move
+        if (checkWin(gridState, currentPlayer)) {
+            message.textContent = `Player ${currentPlayer} wins!`;
+            gameActive = false;
+        } else if (gridState.every(cell => cell !== null)) {
+            message.textContent = "It's a draw!";
+            gameActive = false;
+        } else {
+            // Switch turn to the other player (bot or human)
+            currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+            message.textContent = `Player ${currentPlayer}'s turn`;
+        }
+    }
+}   
+
 
 // Check for a winning condition
 function checkWin(state, player) {
@@ -142,14 +171,25 @@ function checkWin(state, player) {
   );
 }
 
+function resetBoard(){
+    currentPlayer = 'X';
+    gameActive = true;
+    gridState.fill(null);
+    message.textContent = "Player X's turn";
+    createGrid(); // Reinitialize the grid
+}
 // Reset the game when the reset button is clicked
-resetButton.addEventListener('click', () => {
-  currentPlayer = 'X';
-  gameActive = true;
-  gridState.fill(null);
-  message.textContent = "Player X's turn";
-  createGrid(); // Reinitialize the grid
+resetButton.addEventListener('click', resetBoard);
+
+Player1Button.addEventListener('click', () => {
+    resetBoard();
+    botActive = true;
 });
+
+Player2Button.addEventListener('click', () => {
+    resetBoard();
+    botActive = false;
+})
 
 // Start the game
 createGrid();
