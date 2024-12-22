@@ -87,6 +87,7 @@ function minimax(state, depth, isMaximizing) {
 
 // Handle player's click on a cell
 function handleCellClick(event) {
+  if(cuurentPlayer === 'X'){
     const index = event.target.dataset.index;
   
     // If the game is active and the clicked cell is empty, process the move
@@ -115,6 +116,7 @@ function handleCellClick(event) {
       }
     }
   }
+}
 
 // Check for a winning condition
 function checkWin(state, player) {
