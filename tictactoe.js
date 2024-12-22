@@ -13,7 +13,18 @@ function createGrid() {
     const cell = document.createElement('div');
     cell.dataset.index = i;
     cell.addEventListener('click', handleCellClick);
-    cell.addEventListener('touchstart', handleCellClick); // Add touch event for mobile
+    let isTouching = false;
+
+    cell.addEventListener('touchstart', function(event) {
+        if (isTouching) return; // Prevent multiple calls
+        isTouching = true;
+        event.preventDefault();
+        handleCellClick(event);
+    });
+    
+    cell.addEventListener('touchend', function() {
+        isTouching = false; // Reset after touch ends
+    });
     grid.appendChild(cell);
   }
 }
