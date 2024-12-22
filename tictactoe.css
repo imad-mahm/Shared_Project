@@ -60,6 +60,21 @@
     border-radius: 10%;               /* Makes the corners fully rounded */
   }
 
+.x-mark {
+  color: rgb(255, 51, 0);
+  font-size: 2em;
+  text-align: center;
+  line-height: 1;
+}
+
+.o-mark {
+  color: rgb(0, 26, 255);
+  font-size: 2em;
+  text-align: center;
+  line-height: 1;
+}
+
+
   #reset {
     margin-top: 20px;                /* Adds space above the reset button */
     padding: 2px 3px;             /* Adds 10 pixels of space inside the button vertically and 20 pixels horizontally */
