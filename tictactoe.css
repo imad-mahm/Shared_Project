@@ -1,0 +1,35 @@
+/* styles.css */
+body {
+    background-color: rgb(118, 22, 22);
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin: 20px;
+    font-weight: bold;
+  }
+  
+  #grid {
+    display: grid;
+    grid-template-columns: repeat(3, 116px);
+    grid-template-rows: repeat(3, 116px);
+    gap: 10px;
+    justify-content: center;
+    margin: 20px auto;
+  }
+  
+  #grid div {
+    background-color: #a0a0a0;
+    border: 8px solid #0e11c4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
+    cursor: pointer;
+  }
+  
+  #reset {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+  
