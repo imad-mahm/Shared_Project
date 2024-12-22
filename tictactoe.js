@@ -13,6 +13,7 @@ function createGrid() {
     const cell = document.createElement('div');
     cell.dataset.index = i;
     cell.addEventListener('click', handleCellClick);
+    cell.addEventListener('touchstart', handleCellClick); // Add touch event for mobile
     grid.appendChild(cell);
   }
 }
