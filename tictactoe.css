@@ -39,7 +39,27 @@
     font-size: 2rem;                 /* Sets the font size inside the square to 2 times the default size (big) */
     cursor: pointer;                 /* Changes the mouse cursor to a hand when hovering over the square */
   }
-  
+
+  #multiPlayer {
+    margin-top: 5px;                /* Adds space above the reset button */
+    padding: 2px 3px;             /* Adds 10 pixels of space inside the button vertically and 20 pixels horizontally */
+    font-size: 0.75rem;                 /* Sets the font size to the default size */
+    cursor: pointer;                 /* Changes the mouse cursor to a hand when hovering over the button */
+    width: 70px;                   /* Set the width to make it circular */
+    height: 30px;                   /* Equal to width for a perfect circle */
+    border-radius: 10%;               /* Makes the corners fully rounded */
+  }
+
+  #vsBot {
+    margin-top: 5px;                /* Adds space above the reset button */
+    padding: 2px 3px;             /* Adds 10 pixels of space inside the button vertically and 20 pixels horizontally */
+    font-size: 0.75rem;                 /* Sets the font size to the default size */
+    cursor: pointer;                 /* Changes the mouse cursor to a hand when hovering over the button */
+    width: 70px;                   /* Set the width to make it circular */
+    height: 30px;                   /* Equal to width for a perfect circle */
+    border-radius: 10%;               /* Makes the corners fully rounded */
+  }
+
   #reset {
     margin-top: 20px;                /* Adds space above the reset button */
     padding: 2px 3px;             /* Adds 10 pixels of space inside the button vertically and 20 pixels horizontally */
