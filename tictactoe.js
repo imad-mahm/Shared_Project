@@ -51,22 +51,24 @@ function botMove() {
     
     // Make the best move for the bot and update the grid
     if (bestMove !== null) {
-      gridState[bestMove] = 'O';
-      document.querySelector(`[data-index='${bestMove}']`).textContent = 'O'; // Update UI
-  
-      // Check if the bot won after making the move
-      if (checkWin(gridState, 'O')) {
-        message.textContent = "Bot wins!";
-        gameActive = false;
-      } else if (gridState.every(cell => cell !== null)) {
-        message.textContent = "It's a draw!";
-        gameActive = false;
-      } else {
-        // Switch turn to player X
-        currentPlayer = 'X';
-        message.textContent = `Player ${currentPlayer}'s turn`;
-      }
-    }
+        gridState[bestMove] = 'O';
+        const cell = document.querySelector(`[data-index='${bestMove}']`);
+        cell.textContent = 'O';
+        cell.classList.add('o-mark'); // Add the red color class for bot's O
+      
+        // Check if the bot won after making the move
+        if (checkWin(gridState, 'O')) {
+          message.textContent = "Bot wins!";
+          gameActive = false;
+        } else if (gridState.every(cell => cell !== null)) {
+          message.textContent = "It's a draw!";
+          gameActive = false;
+        } else {
+          // Switch turn to player X
+          currentPlayer = 'X';
+          message.textContent = `Player ${currentPlayer}'s turn`;
+        }
+     }      
   }
 
 // Minimax algorithm to evaluate the best possible move
@@ -100,49 +102,17 @@ function minimax(state, depth, isMaximizing) {
   }
 }
 
-function PlayTurn(event){
+function PlayTurn(event) {
     const index = event.target.dataset.index;
-    
+
     // If the game is active and the clicked cell is empty, process the move
     if (gameActive && !gridState[index]) {
-    gridState[index] = currentPlayer;
-    event.target.textContent = currentPlayer;
-
-    // Check for win or draw after player move
-    if (checkWin(gridState, currentPlayer)) {
-        message.textContent = `Player ${currentPlayer} wins!`;
-        gameActive = false;
-    } else if (gridState.every(cell => cell !== null)) {
-        message.textContent = "It's a draw!";
-        gameActive = false;
-    } else {
-        // Switch turn to the other player (bot or human)
-        currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
-        message.textContent = `Player ${currentPlayer}'s turn`; 
-        }
-    }
-}
-
-// Handle player's click on a cell
-function handleCellClick(event) {
-    if(botActive){
-        if(currentPlayer === 'X'){
-            PlayTurn(event);
-            // If it's the bot's turn, make the bot move
-            if (currentPlayer === 'O') {
-            setTimeout(() => { // Add delay to simulate bot thinking
-                botMove();
-            }, 100); // Delay for 100ms for better user experience
-            }
-        }
-    }
-    const index = event.target.dataset.index;
-    
-        // If the game is active and the clicked cell is empty, process the move
-        if (gameActive && !gridState[index]) {
         gridState[index] = currentPlayer;
         event.target.textContent = currentPlayer;
-    
+
+        // Add color based on the current player
+        event.target.classList.add(currentPlayer === 'X' ? 'x-mark' : 'o-mark');
+
         // Check for win or draw after player move
         if (checkWin(gridState, currentPlayer)) {
             message.textContent = `Player ${currentPlayer} wins!`;
@@ -156,7 +126,25 @@ function handleCellClick(event) {
             message.textContent = `Player ${currentPlayer}'s turn`;
         }
     }
-}   
+}
+
+// Handle player's click on a cell
+function handleCellClick(event) {
+    if (botActive) {
+        if (currentPlayer === 'X') {
+            PlayTurn(event);
+            // If it's the bot's turn, make the bot move
+            if (currentPlayer === 'O') {
+                setTimeout(() => {
+                    botMove();
+                }, 100); // Delay for better user experience
+            }
+        }
+    } else {
+        PlayTurn(event);
+    }
+}
+  
 
 
 // Check for a winning condition
