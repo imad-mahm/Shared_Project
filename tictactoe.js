@@ -123,7 +123,7 @@ function handleCellClick(event) {
         if (currentPlayer === 'O') {
           setTimeout(() => { // Add delay to simulate bot thinking
             botMove();
-          }, 1000); // Delay for 500ms for better user experience
+          }, 100); // Delay for 500ms for better user experience
         }
       }
     }
