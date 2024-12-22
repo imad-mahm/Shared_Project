@@ -88,7 +88,7 @@ function minimax(state, depth, isMaximizing) {
 
 // Handle player's click on a cell
 function handleCellClick(event) {
-  if(cuurentPlayer === 'X'){
+    if(currentPlayer === 'X'){
     const index = event.target.dataset.index;
   
     // If the game is active and the clicked cell is empty, process the move
@@ -112,7 +112,7 @@ function handleCellClick(event) {
         if (currentPlayer === 'O') {
           setTimeout(() => { // Add delay to simulate bot thinking
             botMove();
-          }, 500); // Delay for 500ms for better user experience
+          }, 1000); // Delay for 500ms for better user experience
         }
       }
     }
