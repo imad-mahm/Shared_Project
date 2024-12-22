@@ -1,35 +1,52 @@
 /* styles.css */
-body {
-    background-color: rgb(118, 22, 22);
-    font-family: Arial, sans-serif;
-    text-align: center;
-    margin: 20px;
-    font-weight: bold;
+  body {
+    background-color: rgb(0, 0, 0); /* Makes the background black */
+    font-family: Arial, sans-serif;    /* Uses Arial font, and falls back to sans-serif if Arial isn’t available */
+    text-align: center;               /* Aligns all text in the center of the page */
+    margin: 20px;                     /* Adds space (20 pixels) around the page’s content */
+    font-weight: bold;                /* Makes all text on the page bold by default */
   }
-  
+
+
+  h1 { /* Font and color for header only */
+    font-family: "Times New Roman", Times, serif; /* Sets Times New Roman as the font, with fallback fonts */
+    color: white; /* Make it visible on the black background */
+  }
+
+  h2 { /* Color for subheader only */
+    color: rgb(13, 13, 170);
+  }
+
+  p {
+    color: rgb(255, 255, 255); /* Sets text color to white to make it visible*/
+  }
+
   #grid {
-    display: grid;
-    grid-template-columns: repeat(3, 116px);
-    grid-template-rows: repeat(3, 116px);
-    gap: 10px;
-    justify-content: center;
-    margin: 20px auto;
+    display: grid;                    /* Turns the element into a grid layout */
+    grid-template-columns: repeat(3, 116px); /* Creates 3 equal columns, each 116px wide */
+    grid-template-rows: repeat(3, 116px);    /* Creates 3 equal rows, each 116px tall */
+    gap: 2px;                        /* Adds a 2-pixel space between the grid cells */
+    justify-content: center;          /* Centers the grid horizontally on the page */
+    margin: 20px auto;                /* Adds 20 pixels of space above and below, and centers the grid horizontally */
   }
   
   #grid div {
-    background-color: #a0a0a0;
-    border: 8px solid #0e11c4;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 2rem;
-    cursor: pointer;
+    background-color: #a0a0a0;        /* Sets the square's background color to light gray */
+    border-radius: 10%;               /* Makes the corners fully rounded */
+    display: flex;                   /* Makes the square a flex container */
+    justify-content: center;         /* Centers any content horizontally inside the square */
+    align-items: center;             /* Centers any content vertically inside the square */
+    font-size: 2rem;                 /* Sets the font size inside the square to 2 times the default size (big) */
+    cursor: pointer;                 /* Changes the mouse cursor to a hand when hovering over the square */
   }
   
   #reset {
-    margin-top: 20px;
-    padding: 10px 20px;
-    font-size: 1rem;
-    cursor: pointer;
-  }
+    margin-top: 20px;                /* Adds space above the reset button */
+    padding: 2px 3px;             /* Adds 10 pixels of space inside the button vertically and 20 pixels horizontally */
+    font-size: 1rem;                 /* Sets the font size to the default size */
+    cursor: pointer;                 /* Changes the mouse cursor to a hand when hovering over the button */
+    width: 100px;                   /* Set the width to make it circular */
+    height: 50px;                   /* Equal to width for a perfect circle */
+    border-radius: 50%;               /* Makes the corners fully rounded */
+}
   
