@@ -2,12 +2,12 @@
 const grid = document.getElementById('grid');
 const message = document.getElementById('message');
 const resetButton = document.getElementById('reset');
-let currentPlayer = 'X';
+let currentPlayer = 'X'; // Player X starts
 let gameActive = true;
 let gridState = Array(9).fill(null);
 
 // Initialize the game grid
-function creategrid() {
+function createGrid() {
   grid.innerHTML = '';
   for (let i = 0; i < 9; i++) {
     const cell = document.createElement('div');
@@ -17,47 +17,125 @@ function creategrid() {
   }
 }
 
-// Handle a player's move
-function handleCellClick(event) {
-  const index = event.target.dataset.index;
-
-  if (gameActive && !gridState[index]) {
-    gridState[index] = currentPlayer;
-    event.target.textContent = currentPlayer;
-
-    if (checkWin()) {
-      message.textContent = `Player ${currentPlayer} wins!`;
-      gameActive = false;
-    } else if (gridState.every(cell => cell)) {
-      message.textContent = "It's a draw!";
-      gameActive = false;
-    } else {
-      currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
-      message.textContent = `Player ${currentPlayer}'s turn`;
+// Bot's move using the minimax algorithm
+function botMove() {
+    let bestScore = -Infinity;
+    let bestMove = null;
+    // Loop through each cell and calculate the best move for the bot
+    for (let i = 0; i < 9; i++) {
+      if (gridState[i] === null) {
+        gridState[i] = 'O'; // Simulate bot's move
+        let score = minimax(gridState, 0, false); // Get the score using minimax
+        gridState[i] = null; // Undo the move
+        if (score > bestScore) {
+          bestScore = score;
+          bestMove = i; // Save the best move
+        }
+      }
     }
+    
+    // Make the best move for the bot and update the grid
+    if (bestMove !== null) {
+      gridState[bestMove] = 'O';
+      document.querySelector(`[data-index='${bestMove}']`).textContent = 'O'; // Update UI
+  
+      // Check if the bot won after making the move
+      if (checkWin(gridState, 'O')) {
+        message.textContent = "Bot wins!";
+        gameActive = false;
+      } else if (gridState.every(cell => cell !== null)) {
+        message.textContent = "It's a draw!";
+        gameActive = false;
+      } else {
+        // Switch turn to player X
+        currentPlayer = 'X';
+        message.textContent = `Player ${currentPlayer}'s turn`;
+      }
+    }
+  }
+
+// Minimax algorithm to evaluate the best possible move
+function minimax(state, depth, isMaximizing) {
+  if (checkWin(state, 'O')) return 1; // Bot wins
+  if (checkWin(state, 'X')) return -1; // Player X wins
+  if (state.every(cell => cell !== null)) return 0; // Draw
+
+  if (isMaximizing) {
+    let bestScore = -Infinity;
+    for (let i = 0; i < 9; i++) {
+      if (state[i] === null) {
+        state[i] = 'O'; // Bot's move
+        let score = minimax(state, depth + 1, false); // Minimize player's score
+        state[i] = null;
+        bestScore = Math.max(score, bestScore);
+      }
+    }
+    return bestScore;
+  } else {
+    let bestScore = Infinity;
+    for (let i = 0; i < 9; i++) {
+      if (state[i] === null) {
+        state[i] = 'X'; // Player's move
+        let score = minimax(state, depth + 1, true); // Maximize bot's score
+        state[i] = null;
+        bestScore = Math.min(score, bestScore);
+      }
+    }
+    return bestScore;
   }
 }
 
-// Check for a win
-function checkWin() {
+// Handle player's click on a cell
+function handleCellClick(event) {
+    const index = event.target.dataset.index;
+  
+    // If the game is active and the clicked cell is empty, process the move
+    if (gameActive && !gridState[index]) {
+      gridState[index] = currentPlayer;
+      event.target.textContent = currentPlayer;
+  
+      // Check for win or draw after player move
+      if (checkWin(gridState, currentPlayer)) {
+        message.textContent = `Player ${currentPlayer} wins!`;
+        gameActive = false;
+      } else if (gridState.every(cell => cell !== null)) {
+        message.textContent = "It's a draw!";
+        gameActive = false;
+      } else {
+        // Switch turn to the other player (bot or human)
+        currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+        message.textContent = `Player ${currentPlayer}'s turn`;
+  
+        // If it's the bot's turn, make the bot move
+        if (currentPlayer === 'O') {
+          setTimeout(() => { // Add delay to simulate bot thinking
+            botMove();
+          }, 500); // Delay for 500ms for better user experience
+        }
+      }
+    }
+  }
+
+// Check for a winning condition
+function checkWin(state, player) {
   const winPatterns = [
     [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
     [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
     [0, 4, 8], [2, 4, 6],            // Diagonals
   ];
   return winPatterns.some(pattern =>
-    pattern.every(index => gridState[index] === currentPlayer)
+    pattern.every(index => state[index] === player)
   );
 }
 
-// Reset the game
+// Reset the game when the reset button is clicked
 resetButton.addEventListener('click', () => {
   currentPlayer = 'X';
   gameActive = true;
   gridState.fill(null);
   message.textContent = "Player X's turn";
-  creategrid();
+  createGrid(); // Reinitialize the grid
 });
 
 // Start the game
-creategrid();
+createGrid();
