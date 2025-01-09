@@ -1,88 +1,81 @@
-// script.js
-const grid = document.getElementById('grid');
-const message = document.getElementById('message');
-const resetButton = document.getElementById('reset');
-const Player2Button = document.getElementById('multiPlayer');
-const Player1Button = document.getElementById('vsBot');
-let currentPlayer = 'X'; // Player X starts
+const grid = document.getElementById("grid");
+const message = document.getElementById("message");
+const resetButton = document.getElementById("reset");
+const Player2Button = document.getElementById("multiPlayer");
+const Player1Button = document.getElementById("vsBot");
+let currentPlayer = "X";
 let gameActive = true;
 let gridState = Array(9).fill(null);
 let botActive = true;
 
-// Initialize the game grid
 function createGrid() {
-  grid.innerHTML = '';
+  grid.innerHTML = "";
   for (let i = 0; i < 9; i++) {
-    const cell = document.createElement('div');
+    const cell = document.createElement("div");
     cell.dataset.index = i;
-    cell.addEventListener('click', handleCellClick);
-    let isTouching = false;
+    cell.addEventListener("click", handleCellClick);
 
-    cell.addEventListener('touchstart', function(event) {
-        if (isTouching) return; // Prevent multiple calls
-        isTouching = true;
-        event.preventDefault();
-        handleCellClick(event);
+    let isTouching = false;
+    cell.addEventListener("touchstart", function (event) {
+      if (isTouching) return;
+      isTouching = true;
+      event.preventDefault();
+      handleCellClick(event);
     });
-    
-    cell.addEventListener('touchend', function() {
-        isTouching = false; // Reset after touch ends
+    cell.addEventListener("touchend", function () {
+      isTouching = false;
     });
+
     grid.appendChild(cell);
   }
 }
 
-// Bot's move using the minimax algorithm
 function botMove() {
-    let bestScore = -Infinity;
-    let bestMove = null;
-    // Loop through each cell and calculate the best move for the bot
-    for (let i = 0; i < 9; i++) {
-      if (gridState[i] === null) {
-        gridState[i] = 'O'; // Simulate bot's move
-        let score = minimax(gridState, 0, false); // Get the score using minimax
-        gridState[i] = null; // Undo the move
-        if (score > bestScore) {
-          bestScore = score;
-          bestMove = i; // Save the best move
-        }
+  let bestScore = -Infinity;
+  let bestMove = null;
+
+  for (let i = 0; i < 9; i++) {
+    if (gridState[i] === null) {
+      gridState[i] = "O";
+      let score = minimax(gridState, 0, false);
+      gridState[i] = null;
+      if (score > bestScore) {
+        bestScore = score;
+        bestMove = i;
       }
     }
-    
-    // Make the best move for the bot and update the grid
-    if (bestMove !== null) {
-        gridState[bestMove] = 'O';
-        const cell = document.querySelector(`[data-index='${bestMove}']`);
-        cell.textContent = 'O';
-        cell.classList.add('o-mark'); // Add the red color class for bot's O
-      
-        // Check if the bot won after making the move
-        if (checkWin(gridState, 'O')) {
-          message.textContent = "Bot wins!";
-          gameActive = false;
-        } else if (gridState.every(cell => cell !== null)) {
-          message.textContent = "It's a draw!";
-          gameActive = false;
-        } else {
-          // Switch turn to player X
-          currentPlayer = 'X';
-          message.textContent = `Player ${currentPlayer}'s turn`;
-        }
-     }      
   }
 
-// Minimax algorithm to evaluate the best possible move
+  if (bestMove !== null) {
+    gridState[bestMove] = "O";
+    const cell = document.querySelector(`[data-index='${bestMove}']`);
+    cell.textContent = "O";
+    cell.classList.add("o-mark");
+
+    if (checkWin(gridState, "O")) {
+      message.textContent = "Bot wins!";
+      gameActive = false;
+    } else if (gridState.every((cell) => cell !== null)) {
+      message.textContent = "It's a draw!";
+      gameActive = false;
+    } else {
+      currentPlayer = "X";
+      message.textContent = `Player ${currentPlayer}'s turn`;
+    }
+  }
+}
+
 function minimax(state, depth, isMaximizing) {
-  if (checkWin(state, 'O')) return 1; // Bot wins
-  if (checkWin(state, 'X')) return -1; // Player X wins
-  if (state.every(cell => cell !== null)) return 0; // Draw
+  if (checkWin(state, "O")) return 1;
+  if (checkWin(state, "X")) return -1;
+  if (state.every((cell) => cell !== null)) return 0;
 
   if (isMaximizing) {
     let bestScore = -Infinity;
     for (let i = 0; i < 9; i++) {
       if (state[i] === null) {
-        state[i] = 'O'; // Bot's move
-        let score = minimax(state, depth + 1, false); // Minimize player's score
+        state[i] = "O";
+        let score = minimax(state, depth + 1, false);
         state[i] = null;
         bestScore = Math.max(score, bestScore);
       }
@@ -92,8 +85,8 @@ function minimax(state, depth, isMaximizing) {
     let bestScore = Infinity;
     for (let i = 0; i < 9; i++) {
       if (state[i] === null) {
-        state[i] = 'X'; // Player's move
-        let score = minimax(state, depth + 1, true); // Maximize bot's score
+        state[i] = "X";
+        let score = minimax(state, depth + 1, true);
         state[i] = null;
         bestScore = Math.min(score, bestScore);
       }
@@ -103,89 +96,86 @@ function minimax(state, depth, isMaximizing) {
 }
 
 function PlayTurn(event) {
-    const index = event.target.dataset.index;
+  const index = event.target.dataset.index;
 
-    // If the game is active and the clicked cell is empty, process the move
-    if (gameActive && !gridState[index]) {
-        gridState[index] = currentPlayer;
-        event.target.textContent = currentPlayer;
+  if (gameActive && !gridState[index]) {
+    gridState[index] = currentPlayer;
+    event.target.textContent = currentPlayer;
 
-        // Add color based on the current player
-        event.target.classList.add(currentPlayer === 'X' ? 'x-mark' : 'o-mark');
+    event.target.classList.add(currentPlayer === "X" ? "x-mark" : "o-mark");
 
-        // Check for win or draw after player move
-        if (checkWin(gridState, currentPlayer)) {
-            message.textContent = `Player ${currentPlayer} wins!`;
-            gameActive = false;
-        } else if (gridState.every(cell => cell !== null)) {
-            message.textContent = "It's a draw!";
-            gameActive = false;
-        } else {
-            // Switch turn to the other player (bot or human)
-            currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
-            message.textContent = `Player ${currentPlayer}'s turn`;
-        }
-    }
-}
-
-// Handle player's click on a cell
-function handleCellClick(event) {
-    if (botActive) {
-        if (currentPlayer === 'X') {
-            PlayTurn(event);
-            // If it's the bot's turn, make the bot move
-            if (currentPlayer === 'O') {
-                setTimeout(() => {
-                    botMove();
-                }, 100); // Delay for better user experience
-            }
-        }
+    if (checkWin(gridState, currentPlayer)) {
+      message.textContent = `Player ${currentPlayer} wins!`;
+      gameActive = false;
+    } else if (gridState.every((cell) => cell !== null)) {
+      message.textContent = "It's a draw!";
+      gameActive = false;
     } else {
-        PlayTurn(event);
+      currentPlayer = currentPlayer === "X" ? "O" : "X";
+      message.textContent = `Player ${currentPlayer}'s turn`;
     }
-}
-  
-function toggleButtons(activeButton, inactiveButton) {
-  // Add 'active' class to the clicked button
-  activeButton.classList.add('active');
-  // Remove 'active' class from the other button
-  inactiveButton.classList.remove('active');
+  }
 }
 
-// Check for a winning condition
+function handleCellClick(event) {
+  if (botActive) {
+    if (currentPlayer === "X") {
+      PlayTurn(event);
+
+      if (currentPlayer === "O") {
+        setTimeout(() => {
+          botMove();
+        }, 100);
+      }
+    }
+  } else {
+    PlayTurn(event);
+  }
+}
+
+function toggleButtons(activeButton, inactiveButton) {
+  activeButton.classList.add("active");
+
+  inactiveButton.classList.remove("active");
+}
+
 function checkWin(state, player) {
   const winPatterns = [
-    [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
-    [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
-    [0, 4, 8], [2, 4, 6],            // Diagonals
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6],
   ];
-  return winPatterns.some(pattern =>
-    pattern.every(index => state[index] === player)
+  return winPatterns.some((pattern) =>
+    pattern.every((index) => state[index] === player)
   );
 }
 
-function resetBoard(){
-    currentPlayer = 'X';
-    gameActive = true;
-    gridState.fill(null);
-    message.textContent = "Player X's turn";
-    createGrid(); // Reinitialize the grid
+function resetBoard() {
+  currentPlayer = "X";
+  gameActive = true;
+  gridState.fill(null);
+  message.textContent = "Player X's turn";
+  createGrid();
 }
-// Reset the game when the reset button is clicked
-resetButton.addEventListener('click', resetBoard);
 
-Player1Button.addEventListener('click', () => {
-    toggleButtons(Player1Button, Player2Button);
-    resetBoard();
-    botActive = true;
+resetButton.addEventListener("click", resetBoard);
+
+Player1Button.addEventListener("click", () => {
+  toggleButtons(Player1Button, Player2Button);
+  resetBoard();
+  botActive = true;
 });
 
-Player2Button.addEventListener('click', () => {
-    toggleButtons(Player2Button, Player1Button);
-    resetBoard();
-    botActive = false;
-})
+Player2Button.addEventListener("click", () => {
+  toggleButtons(Player2Button, Player1Button);
+  resetBoard();
+  botActive = false;
+});
 
-// Start the game
 createGrid();
 toggleButtons(Player1Button, Player2Button);
